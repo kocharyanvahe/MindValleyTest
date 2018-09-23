@@ -68,7 +68,7 @@ class ImageDownloadManager: NSObject {
         var imageDownloadInfo: ImageDownloadInfo? = imageLoaderQueue[imageURLString]
         if imageDownloadInfo == nil {
             let imageLoaderTask = downloadDelegateSession.downloadTask(with: URL(string: imageURLString)!)
-            imageDownloadInfo = ImageDownloadInfo(downloadURLString: imageURLString, downloadTask: imageLoaderTask, progressHandler: progressHandler, completionHandler:completionHandler)
+            imageDownloadInfo = ImageDownloadInfo(downloadURLString: imageURLString, downloadTask: imageLoaderTask, progressHandler: progressHandler, completionHandler: completionHandler)
             imageLoaderQueue[imageURLString] = imageDownloadInfo
             imageDownloadInfo?.downloadTask.resume()
         }

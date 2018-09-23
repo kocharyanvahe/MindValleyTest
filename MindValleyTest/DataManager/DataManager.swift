@@ -13,21 +13,23 @@ final class DataManager: NSObject {
     var personService = PersonService()
     var images: NSMutableArray = []
     
-    func fetchPerson(success: @escaping (() -> ())) {
+    func fetchPerson(success: @escaping (() -> ()), failure: ((RequestError) -> ())?) {
         personService.performPersons(success: { [unowned self] (isSuccess, response) in
             do {
-                let decoder = JSONDecoder()
-                let responseData = try decoder.decode([Person].self, from: response!)
-                for person in responseData {
-                    let photosURL = ImageURL(full: person.imageURLs.full, thumb: person.imageURLs.thumb)
-                    self.images.add(photosURL)
+                if response != nil {
+                    let decoder = JSONDecoder()
+                    let responseData = try decoder.decode([Person].self, from: response!)
+                    for person in responseData {
+                        let photosURL = ImageURL(full: person.imageURLs.full, thumb: person.imageURLs.thumb)
+                        self.images.add(photosURL)
+                    }
+                    success()
                 }
-                success()
-            } catch let error {
-                print(error)
+            } catch {
+                fatalError("Can't decode to Person")
             }
         }) { (error) in
-            print(error)
+            failure?(error)
         }
     }
     

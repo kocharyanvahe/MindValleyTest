@@ -21,9 +21,28 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
     }
     
     private func viewIsReady() {
-        dataManager.fetchPerson {
+        dataManager.fetchPerson(success: {
             self.collectionView.reloadData()
+        }) { error in
+            switch error {
+            case .NoInternetConnection:
+                self.showError(message: Defines.Messages.NoInternetConnectionMessage.rawValue)
+                return
+            case .TimeOut:
+                self.showError(message: Defines.Messages.TimeOut.rawValue)
+                return
+            default:
+                self.showError(message: Defines.Messages.UnknownError.rawValue)
+                return
+            }
         }
+    }
+    
+    private func showError(message: String) {
+        let alertController = UIAlertController(title: Defines.Messages.ErrorTitle.rawValue, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(action)
+        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: UICollectionViewDataSource
